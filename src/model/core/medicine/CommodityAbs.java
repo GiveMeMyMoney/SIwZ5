@@ -5,14 +5,14 @@ import model.core.condition.Condition;
 /**
  * Created by Marcin on 2016-01-20.
  */
-public abstract class MedicineAbs {
+public abstract class CommodityAbs {
     ECategory type = null;  //kategoria leku
     String name, dateExpiration, dateIntroduction;
     int codeEan;
     Integer medID;
     Condition condition = null;
 
-    public MedicineAbs(Integer medID, ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
+    public CommodityAbs(Integer medID, ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
         this.medID = medID;
         this.type = type;
         this.name = name;
@@ -22,7 +22,7 @@ public abstract class MedicineAbs {
         this.condition = condition;
     }
 
-    public MedicineAbs(ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
+    public CommodityAbs(ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
         this.type = type;
         this.name = name;
         this.dateExpiration = dateExpiration;
@@ -60,19 +60,15 @@ public abstract class MedicineAbs {
     public Condition getCondition() {
         return condition;
     }
-    public int getPackages() {
-        return condition.getPackages();
+    public int getQuantity() {
+        return condition.getQuantity();
+    }
+    public int getOrder() {
+        return condition.getOrder();
     }
     public boolean isEMPTY() {
         return condition.isEMPTY();
     }
-    public int getSachets() {
-        return condition.getSachets();
-    }
-    public int getPills() {
-        return condition.getPills();
-    }
-
 
     //SETTERs:
     public void setMedID(Integer medID) {
@@ -104,19 +100,16 @@ public abstract class MedicineAbs {
     public void setCondition(Condition condition) {
         this.condition = condition;
     }
-    public void setPackages(int packages) {
-        condition.setPackages(packages);
+    public void setQuantity(int quant) {
+        condition.setQuantity(quant);
     }
-    public void setPills(int pills) {
-        condition.setPills(pills);
-    }
-    public void setSachets(int sachets) {
-        condition.setSachets(sachets);
+    public void setOrder(int order) {
+        condition.setOrder(order);
     }
 
     @Override
     public String toString() {
-        return "MedicineAbs{" +
+        return "CommodityAbs{" +
                 "ID=" + medID +
                 "type=" + type +
                 ", name='" + name + '\'' +

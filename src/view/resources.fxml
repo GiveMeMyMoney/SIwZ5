@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane minWidth="837.0" prefHeight="703.0" prefWidth="837.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.MedicineController">
+  <children>
+    <AnchorPane prefHeight="703.0" prefWidth="920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-0.5" AnchorPane.rightAnchor="0.5" AnchorPane.topAnchor="0.0">
+      <children>
+        <Text fill="BLACK" layoutX="20.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="REQUIRED RESOURCES">
+          <font>
+            <Font name="System Bold" size="25.0" />
+          </font>
+        </Text>
+        <TableView id="tableView" fx:id="tv_medicine" layoutX="23.0" layoutY="81.0" prefHeight="331.0" prefWidth="556.0">
+          <columns>
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="121.0" text="Name" fx:id="col_name" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="83.0" text="EAN" fx:id="col_EAN" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="87.0" text="Introduction" fx:id="col_date_introduction" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="88.0" text="Expiration" fx:id="col_date_expiration" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="88.0" text="Quantity" fx:id="col_quantity" />
+            <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="88.0" text="ORDER" fx:id="col_order" />
+          </columns>
+        </TableView>
+        <VBox id="VBox" alignment="CENTER" disable="false" focusTraversable="false" layoutX="701.0" layoutY="98.0" spacing="5.0">
+          <children>
+            <Text fill="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="CATEGORY">
+              <font>
+                <Font name="System Bold" size="16.0" fx:id="x1" />
+              </font>
+            </Text>
+            <Button mnemonicParsing="false" onMouseClicked="#btnShowBuilding" prefHeight="35.0" prefWidth="125.0" text="Building" />
+            <Button mnemonicParsing="false" onMouseClicked="#btnShowElectronic" prefHeight="35.0" prefWidth="125.0" text="Electronic" />
+            <Button mnemonicParsing="false" onMouseClicked="#btnShowOthers" prefHeight="35.0" prefWidth="125.0" text="Others" />
+          </children>
+        </VBox>
+        <GridPane id="GridPane" hgap="10.0" layoutY="591.0" vgap="7.0" AnchorPane.leftAnchor="36.0">
+          <children>
+            <ChoiceBox id="SpinnerType" fx:id="cb_type" prefWidth="124.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+              <items>
+                <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Item 1" />
+                  <String fx:value="Item 2" />
+                  <String fx:value="Item 3" />
+                </FXCollections>
+              </items>
+            </ChoiceBox>
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="EAN code:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <TextField fx:id="tf_name" prefWidth="137.79296875" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="tf_ean" prefWidth="137.79296875" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onMouseClicked="#btnAddResources" prefHeight="34.0" prefWidth="82.013671875" text="Add" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="Expiration date:" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <TextField fx:id="tf_exp_date" prefWidth="137.79296875" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+            <Text scaleX="1.0" scaleY="1.1953010279001468" strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <TextField id="tf_packages" fx:id="tf_quantity" prefWidth="137.79296875" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+        <Button fx:id="btn_cancel" layoutX="596.0" layoutY="342.0" mnemonicParsing="false" onMouseClicked="#btnCancel" prefHeight="70.0" prefWidth="70.0" text="Cancel" />
+        <Text fill="BLACK" font="$x1" layoutX="36.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WAREHOUSE" />
+        <Text fill="BLACK" font="$x1" layoutX="20.0" layoutY="568.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NEW RESOURCES" />
+        <Button id="btn_delete" fx:id="btn_accept" layoutX="701.0" layoutY="342.0" mnemonicParsing="false" onMouseClicked="#btnAccept" prefHeight="70.0" prefWidth="70.0" text="Accept" />
+      </children>
+    </AnchorPane>
+  </children>
+</AnchorPane>

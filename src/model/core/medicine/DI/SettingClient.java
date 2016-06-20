@@ -13,8 +13,6 @@ import model.core.medicine.ECategory;
  */
 public class SettingClient implements ISettingClient {
     ECategory type = null;
-    Integer ambulanceID = null;
-
 
     public SettingClient() {
         this.type = ECategory.get(1);
@@ -29,14 +27,6 @@ public class SettingClient implements ISettingClient {
             throw new NullPointerException("type == null!");
         }
     }
-    @Override
-    public void setAmbulanceID(Integer ambID) {
-        if (ambID != null) {
-            this.ambulanceID = ambID;
-        } else {
-            throw new NullPointerException("ambID == null!");
-        }
-    }
 
     //GETTERs:
     @Override
@@ -45,14 +35,6 @@ public class SettingClient implements ISettingClient {
             return type;
         } else {
             throw new NullPointerException("Nie wybrano typu!");
-        }
-    }
-    @Override
-    public Integer getAmbulanceID() {
-        if (ambulanceID != null) {
-            return ambulanceID;
-        } else {
-            throw new NullPointerException("Nie wybrano ambulanceID!");
         }
     }
 }

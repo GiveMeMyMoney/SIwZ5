@@ -13,27 +13,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("medicine.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("resources.fxml"));
         primaryStage.setTitle("JanuarySOFT");
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
         primaryStage.show();
-
-
-        /*FXMLLoader myLoader = new FXMLLoader(getClass().getResource("medicine.fxml"));
-        Pane myPane = (Pane) myLoader.load();
-        //AmbulanceController controller = (AmbulanceController) myLoader.getController();
-
-        //controller.setPrevStage(primaryStage);
-
-        //Parent rootAmbulance = FXMLLoader.load(getClass().getResource("ambulance.fxml"));
-        //Parent rootMedicine = FXMLLoader.load(getClass().getResource("medicine.fxml"));
-
-        Scene scene = new Scene(myPane, WIDTH, HEIGHT);
-        //Scene scene2 = new Scene(rootMedicine, WIDTH, HEIGHT);
-
-        primaryStage.setTitle("Wirtualna Apteczka");
-        primaryStage.setScene(scene);
-        primaryStage.show();*/
     }
 
 
@@ -49,7 +32,7 @@ public class Main extends Application {
 
         System.out.println(ft.format(date));
         System.out.println(date.toString());
-        MedicineAbs medicine = MedicineFactory.getMedicine(ECategory.PAINKILLER, "Ibuprofen", ft.format(date), ft.format(dateNow), "To je zaje bandaz", 1231231231);
+        CommodityAbs medicine = CommodityFactory.getMedicine(ECategory.PAINKILLER, "Ibuprofen", ft.format(date), ft.format(dateNow), "To je zaje bandaz", 1231231231);
 
         System.out.println(medicine.toString());
 
@@ -62,8 +45,8 @@ public class Main extends Application {
         //model.setAmbulanceID(1);
         //model.setType(ECategory.DRESSING);
 
-        /*List<MedicineAbs> medicines = new ArrayList<>();
-        medicines = model.selectAllMedicineFromDB();
+        /*List<CommodityAbs> medicines = new ArrayList<>();
+        medicines = model.selectAllCommodityFromDB();
 
         //System.out.println(medicines.get(0).toString());
         JOptionPane.showMessageDialog(null, medicines.toString());

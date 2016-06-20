@@ -6,8 +6,8 @@ import java.util.*;
  * Created by Marcin on 2016-01-20.
  */
 public enum ECategory {
-    DRESSING (1),
-    PAINKILLER (2),
+    BUILDING (1),
+    ELECTRONIC (2),
     OTHERS (3); //i wiele innych...
 
     private static final Map<Integer,ECategory> lookup = new HashMap<>();

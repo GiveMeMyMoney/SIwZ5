@@ -1,9 +1,8 @@
 package dataBase;
 
 import javafx.util.Pair;
-import model.core.ambulance.Ambulance;
 import model.core.condition.Condition;
-import model.core.medicine.MedicineAbs;
+import model.core.medicine.CommodityAbs;
 
 import java.util.List;
 
@@ -12,16 +11,12 @@ import java.util.List;
  */
 public interface IDBquery {
     ///INSERT
-    Pair<Integer, Integer> insertMedicineToDB(MedicineAbs medicine, Integer ambulanceID);
-    Integer insertAmbulanceToDB(Ambulance ambulance);
+    Pair<Integer, Integer> insertCommodityToDB(CommodityAbs commodity);
 
     ///SELECT
-    List<MedicineAbs> selectAllMedicineFromDB(Integer ambulanceID);
-    List<Ambulance> selectAllAmbulanceFromDB();
+    List<CommodityAbs> selectAllCommodityFromDB();
 
     ///DELETE
-    boolean deleteMedicineFromDB(Integer medicineID);
-    boolean deleteAmbulanceFromDB(Integer ambID);
 
     //UPDATE
     void updateMedicinesToDB(List<Condition> conditionsToUpdate);

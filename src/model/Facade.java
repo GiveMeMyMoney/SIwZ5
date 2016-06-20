@@ -2,16 +2,14 @@ package model;
 
 import dataBase.DBquery;
 import javafx.util.Pair;
-import model.core.ambulance.Ambulance;
 import model.core.condition.Condition;
 import model.core.medicine.DI.ISettingClient;
 import model.core.medicine.DI.SettingClient;
 import model.core.medicine.ECategory;
-import model.core.medicine.MedicineAbs;
+import model.core.medicine.CommodityAbs;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -34,8 +32,7 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     private static DBquery dbQuery = null;
     private ISettingClient settings = new SettingClient();
 
-    List<MedicineAbs> medicines = new ArrayList<>();
-    List<Ambulance> ambulances = new ArrayList<>();
+    List<CommodityAbs> medicines = new ArrayList<>();
     List<Condition> listConditionToUpdate = new ArrayList<>();
 
     public static Facade getInstance() {
@@ -60,10 +57,6 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     }
 
     ///DI
-    @Override
-    public void setAmbulanceID(Integer ambID) {
-        settings.setAmbulanceID(ambID);
-    }
 
     @Override
     public void setType(ECategory type) {
@@ -74,50 +67,23 @@ public class Facade implements IFacade {    //TODO poprawic interface!
 
     ///INSERT to DB
     @Override
-    public void insertMedicineToDB(MedicineAbs medicine) {
-        if (medicine != null) {
-            Pair<Integer, Integer> pairConIdMedId = dbQuery.insertMedicineToDB(medicine, settings.getAmbulanceID());
+    public void insertCommodityToDB(CommodityAbs commodity) {
+        if (commodity != null) {
+            Pair<Integer, Integer> pairConIdMedId = dbQuery.insertCommodityToDB(commodity);
             if (pairConIdMedId != null) {
-                medicine.setConID(pairConIdMedId.getKey());
-                medicine.setMedID(pairConIdMedId.getValue());
-                medicines.add(medicine);
+                commodity.setConID(pairConIdMedId.getKey());
+                commodity.setMedID(pairConIdMedId.getValue());
+                medicines.add(commodity);
             }
         }
     }
 
-    @Override
-    public Ambulance insertAmbulanceToDB(Ambulance ambulance) {
-        if (ambulance != null) {
-            Integer newAmbID = dbQuery.insertAmbulanceToDB(ambulance);
-            if (newAmbID != null) {
-                ambulance.setAmbID(newAmbID);
-                ambulances.add(ambulance);
-                Collections.sort(ambulances);
-                //TODO compareTo w Ambulance.
-                setAmbulanceID(newAmbID);
-                setType(ECategory.get(1));
-                initAllMedicine();
-            } else {
-                //huston we have a problem! :D
-            }
-            return ambulance;
-        } else {
-            return null;
-        }
-    }
     ///endregion
 
     ///SELECT from DB
     public void initAllMedicine() {
-        if (settings.getAmbulanceID() != null) {
-            medicines = dbQuery.selectAllMedicineFromDB(settings.getAmbulanceID());
-        }
+        medicines = dbQuery.selectAllCommodityFromDB();
         //medicinesCopy = medicines.cl
-    }
-
-    @Override
-    public void initAllAmbulance() {
-        ambulances = dbQuery.selectAllAmbulanceFromDB();
     }
 
     public List<ECategory> getAllCategories() {
@@ -126,24 +92,7 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     ///endregion
 
     ///DELETE from DB
-    @Override
-    public void deleteMedicineFromDB(MedicineAbs medicine) {
-        if (medicine != null) {
-            if (dbQuery.deleteMedicineFromDB(medicine.getMedID())) {
-                medicines.remove(medicine);
-            }
 
-        }
-    }
-
-    @Override
-    public void deleteAmbulanceFromDB(Ambulance ambulance) {
-        if (ambulance != null) {
-            if (dbQuery.deleteAmbulanceFromDB(ambulance.getAmbID())) {
-                ambulances.remove(ambulance);
-            }
-        }
-    }
     ///endregion
 
     ///UPDATE to DB
@@ -158,13 +107,9 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     ///endregion
 
     ///medicines
-    public List<Ambulance> getAllAmbulances() {
-        return ambulances;
-    }
-
-    public List<MedicineAbs> getAllMedicineByType() {
-        List<MedicineAbs> medicinesWithType = new ArrayList<>();
-        for (MedicineAbs medicine : medicines) {
+    public List<CommodityAbs> getAllMedicineByType() {
+        List<CommodityAbs> medicinesWithType = new ArrayList<>();
+        for (CommodityAbs medicine : medicines) {
             if (medicine.getType().equals(settings.getType())) {
                 medicinesWithType.add(medicine);
             }
@@ -172,25 +117,15 @@ public class Facade implements IFacade {    //TODO poprawic interface!
         return medicinesWithType;
     }
 
-    public void updateTempMedicinesArray(Integer medID, int newValue, String columnName, Condition condition) {
-        for (MedicineAbs medicine : medicines) {
-            if (Objects.equals(medicine.getMedID(), medID)) {
-                switch (columnName.toUpperCase()) {
-                    case NAME_PACKAGES:
-                        medicine.setPackages(newValue);
-                        break;
-                    case NAME_SACHETS:
-                        medicine.setSachets(newValue);
-                        break;
-                    case NAME_PILLS:
-                        medicine.setPills(newValue);
-                        break;
-                }
+    public void updateTempCommodityArray(Integer medID, int newValue, Condition condition) {
+        for (CommodityAbs commodity : medicines) {
+            if (Objects.equals(commodity.getMedID(), medID)) {
+                commodity.setQuantity(newValue);
                 listConditionToUpdate.add(condition);
                 break;
             }
         }
-        //MedicineAbs medicineAbs = medicinesCopy.get(0);
+        //CommodityAbs medicineAbs = medicinesCopy.get(0);
     }
     ///endregion
 

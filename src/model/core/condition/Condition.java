@@ -5,33 +5,27 @@ package model.core.condition;
  */
 public class Condition {
     private boolean EMPTY;  //TODO to sie przyda do wyswietlania czerwonego gdy brak.
-    int packages, sachets, pills;
+    int quantity, order;
     Integer conID;
 
-    public Condition(Integer conID, int packages, int sachets, int pills) {
+    public Condition(Integer conID, int quantity) {
         this.conID = conID;
-        this.packages = packages;
-        this.sachets = sachets;
-        this.pills = pills;
+        this.quantity = quantity;
         checkIfEmpty();
     }
 
-    public Condition(int packages, int sachets, int pills) {
-        this.packages = packages;
-        this.sachets = sachets;
-        this.pills = pills;
+    public Condition(int quantity) {
+        this.quantity = quantity;
         checkIfEmpty();
     }
 
     public Condition(Condition condition) {
-        this.packages = condition.getPackages();
-        this.sachets = condition.getSachets();
-        this.pills = condition.getPills();
+        this.quantity = condition.getQuantity();
         checkIfEmpty();
     }
 
     void checkIfEmpty() {
-        EMPTY = (packages == 0 && sachets == 0 && pills == 0);
+        EMPTY = (quantity == 0);
     }
 
     //GETTERs:
@@ -42,35 +36,30 @@ public class Condition {
             throw new NullPointerException("Nie ma ConID dla aktualnego Condition: " + toString());
         }
     }
-    public int getPackages() {
-        return packages;
+    public int getQuantity() {
+        return quantity;
     }
     public boolean isEMPTY() {
         return EMPTY;
     }
-    public int getSachets() {
-        return sachets;
-    }
-    public int getPills() {
-        return pills;
+
+    public int getOrder() {
+        return order;
     }
 
     //SETTERs:
     public void setConID(Integer conID) {
         this.conID = conID;
     }
-    public void setPackages(int packages) {
-        this.packages = packages;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
         checkIfEmpty();
     }
-    public void setPills(int pills) {
-        this.pills = pills;
-        checkIfEmpty();
+
+    public void setOrder(int order) {
+        this.order = order;
     }
-    public void setSachets(int sachets) {
-        this.sachets = sachets;
-        checkIfEmpty();
-    }
+
     public void setEMPTY(boolean EMPTY) {
         this.EMPTY = EMPTY;
     }
@@ -79,9 +68,7 @@ public class Condition {
     public String toString() {
         return "Condition{" +
                 ", conID=" + conID +
-                ", packages=" + packages +
-                ", sachets=" + sachets +
-                ", pills=" + pills +
+                ", quantity=" + quantity +
                 "EMPTY=" + EMPTY +
                 '}';
     }

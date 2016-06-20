@@ -1,11 +1,10 @@
 package dataBase;
 
 import javafx.util.Pair;
-import model.core.ambulance.Ambulance;
 import model.core.condition.Condition;
+import model.core.medicine.CommodityFactory;
 import model.core.medicine.ECategory;
-import model.core.medicine.MedicineAbs;
-import model.core.medicine.MedicineFactory;
+import model.core.medicine.CommodityAbs;
 
 import javax.swing.*;
 import java.sql.*;
@@ -47,40 +46,13 @@ public class DBquery implements IDBquery {
 
     ///INSERT methods:
     /**
-     * metoda sluzaca do ladowania Ambulance do BD.
-     * @param ambulance
-     * @see Ambulance
+     * metoda sluzaca do ladowania Commodity do BD.
+     * @param commodity
+     * @see CommodityAbs
      */
     @Override
-    public Integer insertAmbulanceToDB(Ambulance ambulance) {
-        logger.info("insertAmbulanceToDB: " + ambulance.toString());
-        ResultSet rsAmbulanceID = null;
-        try {
-            prepStmt = connection.prepareStatement("insert into karetka values (null, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
-            //----//
-            int i=0;
-            prepStmt.setString(++i, ambulance.getRegistration());
-            prepStmt.setString(++i, ambulance.getMark());
-            prepStmt.setString(++i, ambulance.getModel());
-            //----//
-            prepStmt.execute();
-            rsAmbulanceID = prepStmt.getGeneratedKeys();
-            return rsAmbulanceID.getInt(1);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * metoda sluzaca do ladowania Medicine do BD.
-     * @param medicine - lek ze stanem
-     * @see MedicineAbs
-     */
-    @Override
-    public Pair<Integer, Integer> insertMedicineToDB(MedicineAbs medicine, Integer ambulanceID) {
-        logger.info("insertMedicineToDB: " + medicine.toString());
+    public Pair<Integer, Integer> insertCommodityToDB(CommodityAbs commodity) {
+        logger.info("insertCommodityToDB: " + commodity.toString());
         //TODO do zmiany na tranzakcje bo ta co jest nie dziala dodaje do stan
         int i=0;
         Integer conID = null, medID = null;
@@ -93,13 +65,13 @@ public class DBquery implements IDBquery {
             //TODO na potrzeby dzialania najpierw zrobic LEK pozniej STAN
             insertMedicine = connection.prepareStatement("insert into lek values (null, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
             //----//
-            int idCategory = medicine.getType().getId();
+            int idCategory = commodity.getType().getId();
             i = 0;
             insertMedicine.setInt(++i, idCategory);
-            insertMedicine.setString(++i, medicine.getName());
-            insertMedicine.setInt(++i, medicine.getCodeEan());
-            insertMedicine.setString(++i, medicine.getDateExpiration());
-            insertMedicine.setString(++i, medicine.getDateIntroduction());
+            insertMedicine.setString(++i, commodity.getName());
+            insertMedicine.setInt(++i, commodity.getCodeEan());
+            insertMedicine.setString(++i, commodity.getDateExpiration());
+            insertMedicine.setString(++i, commodity.getDateIntroduction());
             //----//
             insertMedicine.execute();
 
@@ -111,9 +83,9 @@ public class DBquery implements IDBquery {
                 insertCondition = connection.prepareStatement("insert into stan values (null, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
                 //----//
                 i = 0;
-                insertCondition.setInt(++i, medicine.getCondition().getPackages());
-                insertCondition.setInt(++i, medicine.getCondition().getSachets());
-                insertCondition.setInt(++i, medicine.getCondition().getPills());
+                insertCondition.setInt(++i, commodity.getCondition().getQuantity());
+                insertCondition.setInt(++i, commodity.getCondition().getSachets());
+                insertCondition.setInt(++i, commodity.getCondition().getPills());
                 //----//
                 insertCondition.execute();
 
@@ -143,7 +115,7 @@ public class DBquery implements IDBquery {
             JOptionPane.showMessageDialog(null, e);
             e.printStackTrace();
             /*try {
-                logger.info("Cofniecie tranzakcji w insertMedicineToDB()");
+                logger.info("Cofniecie tranzakcji w insertCommodityToDB()");
                 connection.rollback();
             } catch (SQLException e1) {
                 e1.printStackTrace();
@@ -179,15 +151,13 @@ public class DBquery implements IDBquery {
 
     ///SELECT methods:
     /**
-     * Metoda zwracajaca wszystkie leki z danej kategorii i o danym ID ambulansu (TRANZAKCJA)
-     * @param ambulanceID
-     * @return ArrayList<MedicineAbs>
+     * Metoda zwracajaca wszystkie towary z danej kategorii (TRANZAKCJA)
+     * @return ArrayList<CommodityAbs>
      */
     @Override
-    public List<MedicineAbs> selectAllMedicineFromDB(Integer ambulanceID) {
-        logger.info("Ambulance ID: " + ambulanceID);
+    public List<CommodityAbs> selectAllCommodityFromDB() {
         ResultSet resultAmbulanceMedicine = null, resultCondition = null, resultMedicine = null;
-        List<MedicineAbs> medicineByType = new ArrayList<>();
+        List<CommodityAbs> medicineByType = new ArrayList<>();
         PreparedStatement selectAmbulanceMedicine = null, selectCondition = null, selectMedicine = null;
         try {
             //najpierw pobieram do result wszystkie rekordy o zadanym ID ambulance:
@@ -208,7 +178,7 @@ public class DBquery implements IDBquery {
                 selectMedicine = connection.prepareStatement("SELECT * FROM lek WHERE lek_id = ?");
                 selectMedicine.setInt(1, resultAmbulanceMedicine.getInt("kl_lek_id"));
                 resultMedicine = selectMedicine.executeQuery();
-                MedicineAbs medicine = MedicineFactory.getMedicine(resultMedicine.getInt("lek_id"), ECategory.get(resultMedicine.getInt("lek_kt_id")), resultMedicine.getString("lek_nazwa"), resultMedicine.getString("lek_data_waznosci"),
+                CommodityAbs medicine = CommodityFactory.getMedicine(resultMedicine.getInt("lek_id"), ECategory.get(resultMedicine.getInt("lek_kt_id")), resultMedicine.getString("lek_nazwa"), resultMedicine.getString("lek_data_waznosci"),
                         resultMedicine.getString("lek_data_wprow"), resultMedicine.getInt("lek_kod_ean"), condition);
                 if (medicine != null) {
                     logger.info("Medicine: " + medicine.toString());
@@ -225,89 +195,15 @@ public class DBquery implements IDBquery {
         }
     }
 
-    @Override
-    public List<Ambulance> selectAllAmbulanceFromDB() {
-        logger.info("initAllAmbulance()");
-        ResultSet result = null;
-        List<Ambulance> ambulances = new ArrayList<>();
-        try {
-            prepStmt = connection.prepareStatement("SELECT * FROM karetka ORDER BY kar_rejestracja");
-            result = prepStmt.executeQuery();
-            //pozniej za pomoca Factory tworze konkretny typ(nie musze wiedziec jaki) pojazdu i dopisuje do ArrayListy
-            while (result.next()) {
-                Ambulance ambulance = new Ambulance(result.getInt("kar_id"), result.getString("kar_rejestracja"), result.getString("kar_marka"), result.getString("kar_model"));
-                if (ambulance != null) {
-                    logger.info("Ambulance: " + ambulance.toString());
-                    ambulances.add(ambulance);
-                } else {
-                    logger.info("Err Ambulance = null");
-                }
-            }
-            return ambulances;
-        } catch (SQLException e1) {
-            JOptionPane.showMessageDialog(null, e1);
-            e1.printStackTrace();
-            return null;
-        }
-    }
-
-    ///endregion
-
-    ///DELETE methods:
-    @Override
-    public boolean deleteMedicineFromDB(Integer medicineID) {
-        ResultSet rsAmbulanceMedicineConditionID = null;
-        PreparedStatement  selectAmbulanceMedicineConditionID = null, deleteCondition = null, deleteMedicine = null,
-                deleteAmbulanceMedicineConditionID = null;  //TODO skrocic nazwy.
-        try {
-            selectAmbulanceMedicineConditionID = connection.prepareStatement("SELECT kl_id, kl_stan_id FROM karetka_lek WHERE kl_lek_id = ?");
-            selectAmbulanceMedicineConditionID.setInt(1, medicineID);
-            rsAmbulanceMedicineConditionID = selectAmbulanceMedicineConditionID.executeQuery();
-            if (rsAmbulanceMedicineConditionID.next()) {
-                deleteMedicine = connection.prepareStatement("DELETE FROM lek WHERE lek_id = ?");
-                deleteMedicine.setInt(1, medicineID);
-                deleteMedicine.execute();
-
-                deleteCondition = connection.prepareStatement("DELETE FROM stan WHERE stan_id = ?");
-                deleteCondition.setInt(1, rsAmbulanceMedicineConditionID.getInt("kl_stan_id"));
-                deleteCondition.execute();
-
-                deleteAmbulanceMedicineConditionID = connection.prepareStatement("DELETE FROM karetka_lek WHERE kl_id = ?");
-                deleteAmbulanceMedicineConditionID.setInt(1, rsAmbulanceMedicineConditionID.getInt("kl_id"));
-                deleteAmbulanceMedicineConditionID.execute();
-            }
-            return true;
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean deleteAmbulanceFromDB(Integer ambID) {
-        PreparedStatement deleteAmbulance = null, deleteAmbulanceMedicineConditionID = null;
-        try {
-            deleteAmbulanceMedicineConditionID = connection.prepareStatement("DELETE FROM karetka_lek WHERE kl_kar_id = ?");
-            deleteAmbulanceMedicineConditionID.setInt(1, ambID);
-            deleteAmbulanceMedicineConditionID.execute();
-
-            deleteAmbulance = connection.prepareStatement("DELETE FROM karetka WHERE kar_id = ?");
-            deleteAmbulance.setInt(1, ambID);
-            deleteAmbulance.execute();
-
-            return true;
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e);
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     ///endregion
 
     ///DELETE methods:
 
+
+    ///endregion
+
+    ///DELETE methods:
+    //TODO zrobic stan w tabeli commodity i po sprawie
     @Override
     public void updateMedicinesToDB(List<Condition> conditionsToUpdate) {
         //TODO albo stworzyc do tego widok(bo te TRANZAKCJE SA ZUE!)
@@ -317,9 +213,8 @@ public class DBquery implements IDBquery {
                 updateCondition = connection.prepareStatement("UPDATE stan SET stan_opak = ?, stan_saszetki = ?, stan_tabletki = ? WHERE stan_id = ?");
                 //----//
                 int i = 0;
-                updateCondition.setInt(++i, condition.getPackages());
-                updateCondition.setInt(++i, condition.getSachets());
-                updateCondition.setInt(++i, condition.getPills());
+                updateCondition.setInt(++i, condition.getQuantity());
+                updateCondition.setInt(++i, condition.getOrder());
                 updateCondition.setInt(++i, condition.getConID());
                 //----//
                 updateCondition.execute();
