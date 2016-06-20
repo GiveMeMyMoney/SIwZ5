@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="1476506440">
+    <data-source source="LOCAL" name="SQLite -" uuid="81aff65e-5fe9-4c37-9c3d-529d1c71d800">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/wirtualna_apteczka_DB.db</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

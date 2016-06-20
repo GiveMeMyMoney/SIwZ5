@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="SQLite -" uuid="81aff65e-5fe9-4c37-9c3d-529d1c71d800">
+    <database-info product="SQLite" version="3.8.9" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
+    <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
+    <schema name="" catalog=""/>
+    <table name="karetka" schema="" catalog="" type="TABLE">
+      <column name="kar_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="kar_rejestracja" sqlType="TEXT (7)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="kar_marka" sqlType="TEXT (50)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="kar_model" sqlType="TEXT (50)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="kar_id"/>
+      <exported-key name="#FAKE_karetka_lek_3" table="karetka_lek" schema="" catalog="" columns="kl_kar_id"/>
+    </table>
+    <table name="karetka_lek" schema="" catalog="" type="TABLE">
+      <column name="kl_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="kl_kar_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="kl_lek_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="kl_stan_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <primary-key columns="kl_id"/>
+      <foreign-key name="#FAKE_karetka_lek_1" columns="kl_stan_id" ref-table="stan" ref-schema="" ref-catalog="" ref-columns="stan_id" update-rule="0" delete-rule="0" deferrability="1"/>
+      <foreign-key name="#FAKE_karetka_lek_2" columns="kl_lek_id" ref-table="lek" ref-schema="" ref-catalog="" ref-columns="lek_id" update-rule="0" delete-rule="0" deferrability="1"/>
+      <foreign-key name="#FAKE_karetka_lek_3" columns="kl_kar_id" ref-table="karetka" ref-schema="" ref-catalog="" ref-columns="kar_id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+    <table name="kategoria_leku" schema="" catalog="" type="TABLE">
+      <column name="kl_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="kt_typ" sqlType="TEXT (100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="kl_id"/>
+      <exported-key name="#FAKE_lek_1" table="lek" schema="" catalog="" columns="lek_kt_id"/>
+    </table>
+    <table name="lek" schema="" catalog="" type="TABLE">
+      <column name="lek_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="lek_kt_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="lek_nazwa" sqlType="TEXT" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="lek_kod_ean" sqlType="INTEGER (10)" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="lek_data_waznosci" sqlType="DATE" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="lek_data_wprow" sqlType="DATE" precision="2000000000" scale="10" nullable="true" jdbcType="12" def="J0NVUlJFTlRfVElNRVNUQU1QJw=="/>
+      <primary-key columns="lek_id"/>
+      <foreign-key name="#FAKE_lek_1" columns="lek_kt_id" ref-table="kategoria_leku" ref-schema="" ref-catalog="" ref-columns="kl_id" update-rule="0" delete-rule="0" deferrability="1"/>
+      <exported-key name="#FAKE_karetka_lek_2" table="karetka_lek" schema="" catalog="" columns="kl_lek_id"/>
+    </table>
+    <table name="miejscowosc" schema="" catalog="" type="TABLE">
+      <column name="miej_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="miej_woj" sqlType="TEXT (100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="miej_pow" sqlType="TEXT (100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="miej_miasto" sqlType="TEXT (100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="miej_kod_pocztowy" sqlType="TEXT (7)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="miej_ulica" sqlType="TEXT (120)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="miej_numer" sqlType="INTEGER (5)" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="miej_id"/>
+      <exported-key name="#FAKE_szpital_1" table="szpital" schema="" catalog="" columns="szp_miej_id"/>
+    </table>
+    <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
+      <column name="name" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+      <column name="seq" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="stan" schema="" catalog="" type="TABLE">
+      <column name="stan_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="stan_opak" sqlType="INTEGER (4)" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="stan_saszetki" sqlType="INTEGER (4)" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="stan_tabletki" sqlType="INTEGER (4)" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <primary-key columns="stan_id"/>
+      <exported-key name="#FAKE_karetka_lek_1" table="karetka_lek" schema="" catalog="" columns="kl_stan_id"/>
+    </table>
+    <table name="szpital" schema="" catalog="" type="TABLE">
+      <column name="szp_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="szp_miej_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="szp_nazwa" sqlType="TEXT (100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <column name="szp_wielkosc" sqlType="INTEGER (1)" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="szp_id"/>
+      <foreign-key name="#FAKE_szpital_1" columns="szp_miej_id" ref-table="miejscowosc" ref-schema="" ref-catalog="" ref-columns="miej_id" update-rule="0" delete-rule="0" deferrability="1"/>
+    </table>
+  </data-source>
+</component>
