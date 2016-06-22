@@ -11,16 +11,19 @@ public class Condition {
     public Condition(Integer conID, int quantity) {
         this.conID = conID;
         this.quantity = quantity;
+        this.order = 0;
         checkIfEmpty();
     }
 
     public Condition(int quantity) {
         this.quantity = quantity;
+        this.order = 0;
         checkIfEmpty();
     }
 
     public Condition(Condition condition) {
         this.quantity = condition.getQuantity();
+        this.order = 0;
         checkIfEmpty();
     }
 

@@ -9,11 +9,11 @@ public abstract class CommodityAbs {
     ECategory type = null;  //kategoria leku
     String name, dateExpiration, dateIntroduction;
     int codeEan;
-    Integer medID;
+    Integer comID;
     Condition condition = null;
 
-    public CommodityAbs(Integer medID, ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
-        this.medID = medID;
+    public CommodityAbs(Integer comID, ECategory type, String name, String dateIntroduction, String dateExpiration, int codeEan, Condition condition) {
+        this.comID = comID;
         this.type = type;
         this.name = name;
         this.dateIntroduction = dateIntroduction;
@@ -34,8 +34,8 @@ public abstract class CommodityAbs {
     //METHODs:
 
     //GETTERs:
-    public Integer getMedID() {
-        return medID;
+    public Integer getComID() {
+        return comID;
     }
     public ECategory getType() {
         return type;
@@ -71,8 +71,8 @@ public abstract class CommodityAbs {
     }
 
     //SETTERs:
-    public void setMedID(Integer medID) {
-        this.medID = medID;
+    public void setComID(Integer comID) {
+        this.comID = comID;
     }
     public void setType(ECategory type) {
         this.type = type;
@@ -110,7 +110,7 @@ public abstract class CommodityAbs {
     @Override
     public String toString() {
         return "CommodityAbs{" +
-                "ID=" + medID +
+                "ID=" + comID +
                 "type=" + type +
                 ", name='" + name + '\'' +
                 ", dateExpiration='" + dateExpiration + '\'' +

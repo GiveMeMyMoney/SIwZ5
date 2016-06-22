@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class CommodityFactory {
     private static Logger logger = Logger.getLogger(CommodityFactory.class.getName());
 
-    public static CommodityAbs getMedicine(Integer medID, ECategory type, String name, String dateExpiration, String dateIntroduction, int codeEan, Condition condition)
+    public static CommodityAbs getCommodity(Integer medID, ECategory type, String name, String dateExpiration, String dateIntroduction, int codeEan, Condition condition)
     {
         logger.info("Typ: " + type);
         if(type != null) {
@@ -36,7 +36,7 @@ public class CommodityFactory {
         return null;
     }
 
-    public static CommodityAbs getMedicine(ECategory type, String name, String dateExpiration, String dateIntroduction, int codeEan, Condition condition)
+    public static CommodityAbs getCommodity(ECategory type, String name, String dateExpiration, String dateIntroduction, int codeEan, Condition condition)
     {
         logger.info("Typ: " + type);
         if(type != null) {

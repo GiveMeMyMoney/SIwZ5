@@ -8,31 +8,26 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.text.Text;
 import javafx.util.converter.IntegerStringConverter;
 import model.Facade;
 import model.core.condition.Condition;
 import model.core.medicine.CommodityAbs;
-import model.core.medicine.CommodityFactory;
 import model.core.medicine.ECategory;
 
 import javax.swing.*;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class MedicineController implements Initializable {
-    private static Logger logger = Logger.getLogger(MedicineController.class.getName());
+public class ResourcesController implements Initializable {
+    private static Logger logger = Logger.getLogger(ResourcesController.class.getName());
     private Facade model = Facade.getInstance();
 
-    private boolean editFlag = false;
-
-    List<CommodityAbs> medicines = new ArrayList<>();
-
-    //ObservableList<Ambulance> obList2;
+    List<CommodityAbs> commodities = new ArrayList<>();
 
     ///FXML variable region
-    @FXML TableView<CommodityAbs> tv_medicine;
+    @FXML TableView<CommodityAbs> tv_commodity;
     @FXML TableColumn<CommodityAbs,String> col_name;
     @FXML TableColumn<CommodityAbs,Integer> col_EAN;
     @FXML TableColumn<CommodityAbs,String> col_date_introduction;
@@ -42,6 +37,7 @@ public class MedicineController implements Initializable {
 
     @FXML ChoiceBox<ECategory> cb_type;
     @FXML TextField tf_name, tf_ean, tf_exp_date, tf_quantity;
+    @FXML Text tf_category;
     @FXML Button btn_accept, btn_cancel;    //TODO btn_delete zrobi� pewne "podswietlanie" gdy jest jaka� opcja wybrana na tableView...
     //endregion
 
@@ -50,12 +46,12 @@ public class MedicineController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("jestem w initialize!");
 
-        model.initAllMedicine();    //TODO do wyodrebnienia!
+        model.initAllCommodities();    //TODO do wyodrebnienia!
 
         model.setType(ECategory.BUILDING);
 
         initTableView();
-        setMedicineArray();
+        setCommodityArray();
 
         /**
          * Ladowanie do ChoiceBox
@@ -72,38 +68,45 @@ public class MedicineController implements Initializable {
 
     //private method region
     private void initTableView() {
-        tv_medicine.setEditable(true);
+        tf_category.setText(model.getType());
+        tv_commodity.setEditable(true);
         //TODO dodac ID(najlepiej uzyc ORMa) i stworzyc modyfikacje dla nazwy.
         col_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
         col_EAN.setCellValueFactory(new PropertyValueFactory<>("CodeEan"));
         col_date_introduction.setCellValueFactory(new PropertyValueFactory<>("DateIntroduction"));
         col_date_expiration.setCellValueFactory(new PropertyValueFactory<>("DateExpiration"));
-        col_quantity.setCellValueFactory(new PropertyValueFactory<>("Packages"));
-        col_quantity.setCellFactory(TextFieldTableCell.<CommodityAbs, Integer>forTableColumn(new IntegerStringConverter()));
+        col_quantity.setCellValueFactory(new PropertyValueFactory<>("Quantity"));
 
         ///order
-        col_order.setCellValueFactory(new PropertyValueFactory<>("Sachets"));
+        col_order.setCellValueFactory(new PropertyValueFactory<>("Order"));
         col_order.setCellFactory(TextFieldTableCell.<CommodityAbs, Integer>forTableColumn(new IntegerStringConverter()));
         col_order.setOnEditCommit(event -> {
             //col_quantity.setStyle("-fx-background-color: blue");
             if (!Objects.equals(event.getOldValue(), event.getNewValue())) {
                 //TODO sprawdzenie czy dodalismy integer > 0
                 int rowId = event.getTablePosition().getRow();  //pobranie ID wiersza ktory modifikujemy
-                for (Node n : tv_medicine.lookupAll("TableRow")) {
+                for (Node n : tv_commodity.lookupAll("TableRow")) {
                     if (n instanceof TableRow) {
                         TableRow row = (TableRow) n;
                         if (row.getIndex() == rowId) {
-                            row.setStyle("-fx-background-color: blue; ");    //TODO jak zmienic kolor tylko tekstu do znalezienia
+                                //TODO jak zmienic kolor tylko tekstu do znalezienia
                             //row.setStyle("-fx-text-inner-color: blue;");
                             //TODO do uporzadkowania i przenisienia do metody private
-                            String nameOfColumn = event.getTableColumn().getText();
+                            //String nameOfColumn = event.getTableColumn().getText();
                             int newValue = event.getNewValue();
-                            Condition con = tv_medicine.getSelectionModel().getSelectedItem().getCondition();
-                            Integer medID = tv_medicine.getSelectionModel().getSelectedItem().getMedID();
-                            //zmien nie na trwalo liste w Facade ale nie update do BD:
-                            model.updateTempCommodityArray(medID, newValue, con);
-                            //reload widoku:
-                            setMedicineArray();
+                            Condition con = tv_commodity.getSelectionModel().getSelectedItem().getCondition();
+                            if (newValue > con.getQuantity()) {
+                                JOptionPane.showMessageDialog(null, "YOU DONT HAVE SO MUCH QUANTITY OF THIS PRODUCT");
+                                initTableView();
+                            } else {
+                                row.setStyle("-fx-background-color: #9fddff; ");
+                                Integer conID = tv_commodity.getSelectionModel().getSelectedItem().getComID();
+                                //zmien nie na trwalo liste w Facade ale nie update do BD:
+                                model.updateTempCommodityArray(conID, newValue, con);
+                                //reload widoku:
+                                setCommodityArray();
+                            }
+
                             logger.info("Zamieniono tymczasowo");
                             break;
                         }
@@ -113,10 +116,10 @@ public class MedicineController implements Initializable {
         });
     }
 
-    private void setMedicineArray() {
-        medicines = model.getAllMedicineByType();
-        ObservableList<CommodityAbs> dataMedicine = FXCollections.observableArrayList(medicines);
-        tv_medicine.setItems(dataMedicine);
+    private void setCommodityArray() {
+        commodities = model.getAllMedicineByType();
+        ObservableList<CommodityAbs> dataCommodities = FXCollections.observableArrayList(commodities);
+        tv_commodity.setItems(dataCommodities);
     }
 
     private boolean validateIntegers(List<String> texts) {
@@ -137,20 +140,24 @@ public class MedicineController implements Initializable {
     //FXML method region
     @FXML public void btnShowBuilding() {
         model.setType(ECategory.BUILDING);
-        setMedicineArray();
+        setCommodityArray();
+        initTableView();
     }
 
     @FXML public void btnShowElectronic() {
         model.setType(ECategory.ELECTRONIC);
-        setMedicineArray();
+        setCommodityArray();
+        initTableView();
     }
 
     @FXML public void btnShowOthers() {
         model.setType(ECategory.OTHERS);
-        setMedicineArray();
+        setCommodityArray();
+        initTableView();
     }
 
     @FXML public void btnAddResources() {
+        JOptionPane.showMessageDialog(null, "HERE YOU CAN ADD SOME RESOURCES IF YOU DONT SEE THEM IN THE LIST :)");
         /*ArrayList<String> atributes = new ArrayList<>();
         if(validateIntegers(Arrays.asList(tf_quantity.getText()))) {
             JOptionPane.showMessageDialog(null, "Please set an Integer into column \"Quantity\"");
@@ -175,13 +182,13 @@ public class MedicineController implements Initializable {
             }
             Condition con = new Condition(Integer.valueOf(atributes.get(0)));
             SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
-            CommodityAbs medicine = CommodityFactory.getMedicine(category, atributes.get(3), atributes.get(4), ft.format(new Date()), Integer.valueOf(atributes.get(5)), con);
+            CommodityAbs medicine = CommodityFactory.getCommodity(category, atributes.get(3), atributes.get(4), ft.format(new Date()), Integer.valueOf(atributes.get(5)), con);
             logger.info("Medicine: " + medicine.toString());
             //DB
             model.setType(category);
             model.insertCommodityToDB(medicine);
             //VIEW
-            setMedicineArray();
+            setCommodityArray();
             //flag = cb_type.getValue(); //TODO
             //changeToAddByType(flag);
 
@@ -193,23 +200,24 @@ public class MedicineController implements Initializable {
     }
 
     @FXML public void btnAccept() {
+        JOptionPane.showMessageDialog(null, "WELL DONE! YOU HAVE CHOOSE YOUR COMMODITIES :)");
         /*logger.info("proba buttona btnDeleteMedicine");
-        final int selectedIdx = tv_medicine.getSelectionModel().getSelectedIndex();
+        final int selectedIdx = tv_commodity.getSelectionModel().getSelectedIndex();
         if (selectedIdx != -1) {
-            CommodityAbs medicineToRemove = tv_medicine.getSelectionModel().getSelectedItem();
-            final int newSelectedIdx = (selectedIdx == tv_medicine.getItems().size()-1) ? selectedIdx : selectedIdx;
+            CommodityAbs medicineToRemove = tv_commodity.getSelectionModel().getSelectedItem();
+            final int newSelectedIdx = (selectedIdx == tv_commodity.getItems().size()-1) ? selectedIdx : selectedIdx;
 
             //usun z BD:
             model.deleteMedicineFromDB(medicineToRemove);
             //reload widoku:
-            setMedicineArray();
+            setCommodityArray();
             logger.info("Pousuwane");
-            tv_medicine.getSelectionModel().select(newSelectedIdx);
+            tv_commodity.getSelectionModel().select(newSelectedIdx);
         }*/
     }
 
     private void cleanBackgroundTableView() {
-        for (Node n : tv_medicine.lookupAll("TableRow")) {
+        for (Node n : tv_commodity.lookupAll("TableRow")) {
             if (n instanceof TableRow) {
                 TableRow row = (TableRow) n;
                 row.setStyle("-fx-background-color: white; ");
@@ -218,9 +226,9 @@ public class MedicineController implements Initializable {
     }
 
     @FXML public void btnCancel() {
-        model.initAllMedicine();
+        model.initAllCommodities();
         //initTableView();
-        setMedicineArray();
+        setCommodityArray();
         //cleanBackgroundTableView();
     }
     //endregion

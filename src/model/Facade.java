@@ -32,7 +32,7 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     private static DBquery dbQuery = null;
     private ISettingClient settings = new SettingClient();
 
-    List<CommodityAbs> medicines = new ArrayList<>();
+    List<CommodityAbs> commodities = new ArrayList<>();
     List<Condition> listConditionToUpdate = new ArrayList<>();
 
     public static Facade getInstance() {
@@ -72,8 +72,8 @@ public class Facade implements IFacade {    //TODO poprawic interface!
             Pair<Integer, Integer> pairConIdMedId = dbQuery.insertCommodityToDB(commodity);
             if (pairConIdMedId != null) {
                 commodity.setConID(pairConIdMedId.getKey());
-                commodity.setMedID(pairConIdMedId.getValue());
-                medicines.add(commodity);
+                commodity.setComID(pairConIdMedId.getValue());
+                commodities.add(commodity);
             }
         }
     }
@@ -81,9 +81,9 @@ public class Facade implements IFacade {    //TODO poprawic interface!
     ///endregion
 
     ///SELECT from DB
-    public void initAllMedicine() {
-        medicines = dbQuery.selectAllCommodityFromDB();
-        //medicinesCopy = medicines.cl
+    public void initAllCommodities() {
+        commodities = dbQuery.selectAllCommodityFromDB();
+        //medicinesCopy = commodities.cl
     }
 
     public List<ECategory> getAllCategories() {
@@ -106,26 +106,30 @@ public class Facade implements IFacade {    //TODO poprawic interface!
 
     ///endregion
 
-    ///medicines
+    ///commodities
     public List<CommodityAbs> getAllMedicineByType() {
         List<CommodityAbs> medicinesWithType = new ArrayList<>();
-        for (CommodityAbs medicine : medicines) {
-            if (medicine.getType().equals(settings.getType())) {
-                medicinesWithType.add(medicine);
+        for (CommodityAbs commodities : this.commodities) {
+            if (commodities.getType().equals(settings.getType())) {
+                medicinesWithType.add(commodities);
             }
         }
         return medicinesWithType;
     }
 
     public void updateTempCommodityArray(Integer medID, int newValue, Condition condition) {
-        for (CommodityAbs commodity : medicines) {
-            if (Objects.equals(commodity.getMedID(), medID)) {
-                commodity.setQuantity(newValue);
+        for (CommodityAbs commodity : commodities) {
+            if (Objects.equals(commodity.getComID(), medID)) {
+                commodity.setOrder(newValue);
                 listConditionToUpdate.add(condition);
                 break;
             }
         }
         //CommodityAbs medicineAbs = medicinesCopy.get(0);
+    }
+
+    public String getType() {
+        return settings.getType().toString();
     }
     ///endregion
 

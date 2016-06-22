@@ -32,7 +32,7 @@ public class Main extends Application {
 
         System.out.println(ft.format(date));
         System.out.println(date.toString());
-        CommodityAbs medicine = CommodityFactory.getMedicine(ECategory.PAINKILLER, "Ibuprofen", ft.format(date), ft.format(dateNow), "To je zaje bandaz", 1231231231);
+        CommodityAbs medicine = CommodityFactory.getCommodity(ECategory.PAINKILLER, "Ibuprofen", ft.format(date), ft.format(dateNow), "To je zaje bandaz", 1231231231);
 
         System.out.println(medicine.toString());
 
